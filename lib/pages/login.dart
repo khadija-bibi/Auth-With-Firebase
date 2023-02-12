@@ -1,6 +1,8 @@
 import 'package:auth_with_firebase/pages/forgetPassword.dart';
 import 'package:auth_with_firebase/pages/signup.dart';
 import 'package:auth_with_firebase/users/user_main.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
 
 class Login extends StatefulWidget {
@@ -19,9 +21,40 @@ class _LoginState extends State<Login> {
 final emailController=TextEditingController();
   final passwordController=TextEditingController();
 
-  void userLogin(){
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => UserMain()));
+  Future<void> userLogin() async {
+
+    try{
+      await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            // backgroundColor: Colors.redAccent,
+              content:Text("Loggin Succesfully.",
+                style: TextStyle(fontSize:20.0),)
+
+          ));
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => UserMain()));
+    }
+    on FirebaseAuthException catch(e){
+      if(e.code=="user-not-found"){
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Colors.redAccent,
+                content:Text("No User Found for that Email",
+                  style: TextStyle(fontSize:18.0),)
+
+            ));
+      }
+      else if(e.code=="wrong-password"){
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                backgroundColor: Colors.redAccent,
+                content:Text("Wrong Password provided by User",
+                  style: TextStyle(fontSize:18.0),)
+
+            ));
+      }
+    }
   }
   @override
   void dispose(){
@@ -49,10 +82,13 @@ final emailController=TextEditingController();
                 ),
                 Text("HELLO AGAIN!",
                     style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold)),
-                Text("Welcome back, we are here for you!",
-                    style: TextStyle(
-                      fontSize: 20,
-                    )),
+                Padding(
+                  padding: const EdgeInsets.only(left: 28),
+                  child: Text("Welcome back, we are here for you!",
+                      style: TextStyle(
+                        fontSize: 20,
+                      )),
+                ),
                 SizedBox(
                   height: 40,
                 ),

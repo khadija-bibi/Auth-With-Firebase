@@ -1,4 +1,6 @@
 import 'package:auth_with_firebase/pages/login.dart';
+import 'package:auth_with_firebase/users/user_main.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Signup extends StatefulWidget {
@@ -23,6 +25,58 @@ class _SignupState extends State<Signup> {
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
+  }
+
+  registration() async{
+    if(password==confirmPassword){
+try{
+  await FirebaseAuth.instance.
+  createUserWithEmailAndPassword(email: email, password: password);
+ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      // backgroundColor: Colors.redAccent,
+  content:Text("Registered Succesfully.Please Loggin..",
+  style: TextStyle(fontSize:20.0),)
+
+    ));
+  Navigator.push(context,
+      MaterialPageRoute(builder: (context) => Login()));
+
+
+}
+on FirebaseAuthException catch(e){
+  if(e.code=="weak-password"){
+    print("Password Provided is too Weak");
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            backgroundColor: Colors.black,
+            content:Text("Password Provided is too Weak",
+              style: TextStyle(fontSize:18.0),)
+
+        ));
+  }
+  else if(e.code=="email-already-in-use"){
+    print("Account Already exists");
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            backgroundColor: Colors.black,
+            content:Text("Account Already exists",
+              style: TextStyle(fontSize:18.0),)
+
+        ));
+  }
+}
+    }
+    else{
+      print("Password and confirm Password doesn't match");
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              backgroundColor: Colors.black,
+              content:Text("Password and confirm Password doesn't match",
+                style: TextStyle(fontSize:16.0),)
+
+          ));
+    }
   }
 
   @override
@@ -132,6 +186,7 @@ class _SignupState extends State<Signup> {
                                 password=passwordController.text;
                                 confirmPassword=confirmPasswordController.text;
                               });
+                              registration();
                             }
                           },
 

@@ -2,6 +2,7 @@ import 'package:auth_with_firebase/pages/forgetPassword.dart';
 import 'package:auth_with_firebase/pages/login.dart';
 import 'package:auth_with_firebase/pages/signup.dart';
 import 'package:auth_with_firebase/users/user_main.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class ChangePassword extends StatefulWidget {
@@ -19,10 +20,24 @@ class _ChangePasswordState extends State<ChangePassword> {
   // controllers
 
   final newPasswordController = TextEditingController();
+final currentUser=FirebaseAuth.instance.currentUser;
+  void changePassword() async{
+try{
+  await currentUser!.updatePassword(newPassword);
+  FirebaseAuth.instance.signOut();
+  Navigator.push(context,
+      MaterialPageRoute(builder: (context) => Login()));
+  ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        // backgroundColor: Colors.redAccent,
+          content:Text("Password has been changed .Login again !",
+            style: TextStyle(fontSize:20.0),)
 
-  void changePassword(){
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => Login()));
+      ));
+}
+catch(e){
+
+}
 
   }
 

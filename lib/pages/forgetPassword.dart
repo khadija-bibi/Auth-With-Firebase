@@ -1,5 +1,6 @@
 import 'package:auth_with_firebase/pages/login.dart';
 import 'package:auth_with_firebase/pages/signup.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class ForgetPassword extends StatefulWidget {
@@ -23,6 +24,29 @@ class _ForgetPasswordState extends State<ForgetPassword> {
 
     super.dispose();
   }
+  resetPassword()async{
+    try{
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            // backgroundColor: Colors.redAccent,
+              content:Text("Password Reset Email has been sent !",
+                style: TextStyle(fontSize:20.0),)
+
+          ));
+    }on FirebaseException catch(e){
+      if(e.code=="user-not-found"){
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              // backgroundColor: Colors.redAccent,
+                content:Text("No user found for that email",
+                  style: TextStyle(fontSize:20.0),)
+
+            ));
+      }
+
+    }
+  }
 
   @override
 
@@ -37,10 +61,13 @@ class _ForgetPasswordState extends State<ForgetPassword> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // SizedBox(height: 40,),
-                Text("Reset link will be sent to your email!",
-                    style: TextStyle(
-                      fontSize: 20,
-                    )),
+                Padding(
+                  padding: const EdgeInsets.only(left: 28),
+                  child: Text("Reset link will be sent to your email!",
+                      style: TextStyle(
+                        fontSize: 20,
+                      )),
+                ),
 
                 Padding(
                   padding:
@@ -87,6 +114,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                                 email=emailController.text;
 
                               });
+                              resetPassword();
                             }
                           },
 

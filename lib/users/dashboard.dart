@@ -12,7 +12,7 @@ class _DashBoardState extends State<DashBoard> {
     return Center(
       child: Container(
         child: Text("DashBoard",style: TextStyle(
-          color: Colors.black,
+          color: Colors.blue,
           fontWeight: FontWeight.bold,
           fontSize: 20
         )),

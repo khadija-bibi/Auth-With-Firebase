@@ -2,6 +2,7 @@ import 'package:auth_with_firebase/pages/login.dart';
 import 'package:auth_with_firebase/users/changePassword.dart';
 import 'package:auth_with_firebase/users/dashboard.dart';
 import 'package:auth_with_firebase/users/profile.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 class UserMain extends StatefulWidget {
   const UserMain({Key? key}) : super(key: key);
@@ -31,7 +32,8 @@ class _UserMainState extends State<UserMain> {
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(onPressed: (){
+            child: ElevatedButton(onPressed: () async {
+              await FirebaseAuth.instance.signOut();
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => Login()));
             },   child: Padding(
